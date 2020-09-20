@@ -1,19 +1,21 @@
 (ns bottles.core
   (:require [clojure.string :as s]))
 
-(defn bottle-text
-  [number]
-  (condp = number
-    1 "1 bottle"
-    0 "no more bottles"
-    (str number " bottles")))
+(defn determine-text
+  [text-options default-fn number]
+  (get text-options number (default-fn number)))
 
-(defn action-text
-  [number]
-  (condp = number
-    1 "Take it down and pass it around"
-    0 "Go to the store and buy some more"
-    "Take one down and pass it around"))
+(def bottle-text
+  (partial determine-text
+           {1 "1 bottle"
+            0 "no more bottles"}
+           #(str % " bottles")))
+
+(def action-text
+  (partial determine-text
+           {1 "Take it down and pass it around"
+            0 "Go to the store and buy some more"}
+           (fn [_] "Take one down and pass it around")))
 
 (defn verse
   [number]
